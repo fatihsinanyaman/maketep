@@ -1,5 +1,6 @@
 <template>
 	<div id="app">
+		<router-view />
 		<el-row>
 			<el-col :span="24">
 				<div class="grid-content bg-purple-dark">
