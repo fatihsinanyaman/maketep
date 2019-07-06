@@ -1,28 +1,22 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+	<div id="app">
+		<el-row>
+			<el-col :span="24">
+				<div class="grid-content bg-purple-dark">
+					<h1>Maketep</h1>
+					<h2>Maketep</h2>
+					<h3>Maketep</h3>
+					<el-button type="success">Success</el-button>
+					<el-link type="primary">primary</el-link>
+				</div>
+			</el-col>
+		</el-row>
+	</div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
+	name: 'app',
 }
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
