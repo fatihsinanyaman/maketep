@@ -1,18 +1,11 @@
 <template>
-	<div id="app">
-		<router-view />
-		<el-row>
-			<el-col :span="24">
-				<div class="grid-content bg-purple-dark">
-					<h1>Maketep</h1>
-					<h2>Maketep</h2>
-					<h3>Maketep</h3>
-					<el-button type="success">Success</el-button>
-					<el-link type="primary">primary</el-link>
-				</div>
-			</el-col>
-		</el-row>
-	</div>
+	<el-container id="app">
+		<router-view name="header" />
+		<el-main>
+			<router-view />
+		</el-main>
+		<router-view name="footer" />
+	</el-container>
 </template>
 
 <script>

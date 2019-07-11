@@ -1,16 +1,25 @@
 import VueRouter from 'vue-router';
-import Home from '../views/website/pages/home/Index';
+
+import Header from '@/components/layouts/Header';
+import Footer from '@/components/layouts/Footer';
+
+import Home from '@/views/website/pages/home/Index';
 
 const routes = [
 	{
 		path: `/`,
 		name: 'Home',
-		component: Home
+		components: {
+			default: Home,
+			header: Header,
+			footer: Footer,
+		}
 	},
 ];
 
 const router = new VueRouter({
-	routes
+	routes,
+	mode: 'history',
 });
 
 export default router;

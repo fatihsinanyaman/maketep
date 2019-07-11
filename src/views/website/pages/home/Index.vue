@@ -1,23 +1,14 @@
 <template>
-	<div>
-		<h1>homepage</h1>
-		{{ test }}
-	</div>
+	<el-row>
+		<el-col :span="24">
+			<h1>homepage</h1>
+		</el-col>
+	</el-row>
 </template>
 
 <script>
 
-//import test from '@components/test';
-
 export default {
 	name: 'Home',
-	
-	computed: {
-		test: () => process.env.VUE_APP_ALL_ENVIRONMENT
-	},
-
-	created(){
-		console.table(process.env);
-	}
 }
 </script>

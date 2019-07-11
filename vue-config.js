@@ -1,12 +1,13 @@
-const path = require('path');
+var path = require('path');
 
 module.exports = {
-	baseUrl: '/team/',
+	
 	configureWebpack: {
-		resolve: {
+	    resolve: {
 			alias: {
-				"@": path.resolve(__dirname, 'src/')
+				'@': path.resolve(__dirname, 'src')
 			}
-		}
+		},
 	}
-};
+
+}
