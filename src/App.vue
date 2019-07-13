@@ -1,11 +1,9 @@
 <template>
-	<el-container id="app">
-		<router-view name="header" />
-		<el-main>
+		<div>
+			<router-view name="header" />
 			<router-view />
-		</el-main>
-		<router-view name="footer" />
-	</el-container>
+			<router-view name="footer" />
+		</div>
 </template>
 
 <script>
