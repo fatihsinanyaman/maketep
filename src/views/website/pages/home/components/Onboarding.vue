@@ -2,7 +2,9 @@
 	<div id="main-content" class="p-strip--image is-dark is-deep onboarding-wrapper"> 
 		<div class="row"> 
 			<div class="col-6">
-				<h1 class="p-heading--stylized">Vanilla is a simple extensible CSS framework, written in Sass, by the Ubuntu Web Team</h1> 
+				<h1 class="p-heading--stylized">
+					Maketep, <b>Makerların</b> projelerini paylaşarak ve birbirleri ile etkileşim halinde oldukları online platform...
+				</h1> 
 			</div>
 			<div class="col-6">
 				<div class="p-strip">
@@ -84,5 +86,8 @@ export default {
 	.onboarding-wrapper{
 		background-image: url('https://assets.ubuntu.com/v1/b54d869a-vanilla-grad-background-min.png');
 		background-position: 75% 50%;
+	}
+	.onboarding-wrapper .p-strip{
+		padding-top:0;
 	}
 </style>
