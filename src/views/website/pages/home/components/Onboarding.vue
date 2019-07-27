@@ -1,5 +1,5 @@
 <template>
-	<div id="main-content" class="p-strip--image is-dark is-deep onboarding-wrapper"> 
+	<div id="main-content" class="p-strip--image is-dark is-deep onboarding-wrapper" :style="{ backgroundImage: `url(${require(`@/assets/imgs/bg-${bgIndex}.jpg`)})` }"> 
 		<div class="row"> 
 			<div class="col-6">
 				<h1 class="p-heading--stylized">
@@ -47,7 +47,8 @@ export default {
 
 	data(){
 		return {
-			currentTab: 'signup', // ['signup', 'login']
+			currentTab: 'signup', // ['signup', 'login'],
+			bgIndex: Math.floor(Math.random() * 4) + 1,
 		}
 	},
 
@@ -84,7 +85,6 @@ export default {
 
 <style scoped>
 	.onboarding-wrapper{
-		background-image: url('https://assets.ubuntu.com/v1/b54d869a-vanilla-grad-background-min.png');
 		background-position: 75% 50%;
 	}
 	.onboarding-wrapper .p-strip{
