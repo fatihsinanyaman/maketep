@@ -2,6 +2,7 @@
 export const USER = {
 	user_id: 1,
 	user_name: 'fatihsinanyaman',
+	user_email: 'fatihsinanyaman@gmail.com',
 	user_fullname: 'Fatih Sinan Yaman',
 	user_image: 'https://pbs.twimg.com/profile_images/1154632712197685250/ehckAScZ_400x400.jpg',
 	user_bio: 'Linux, PHP, Javascript, Vuejs, Codeigniter, Angular2, Ionic, Angularjs, Rest, CSS, Opencart, Concrete5, Mysql and bla bla...'

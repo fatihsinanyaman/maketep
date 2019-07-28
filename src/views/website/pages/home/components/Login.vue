@@ -15,6 +15,7 @@
 						placeholder="ahmet@gmail.com"
 						name="email"
 						v-validate="'required|email'"
+						v-model="user.user_email"
 					>
 					<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('login.email')">
 						<strong>Hata:</strong> {{ errors.first('login.email') }}
@@ -32,6 +33,7 @@
 						placeholder="******"
 						name="password"
 						v-validate="'required|min:5'"
+						v-model="user.user_password"
 					>
 					<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('login.password')">
 						<strong>Hata:</strong> {{ errors.first('login.password') }}
@@ -88,6 +90,7 @@
 						placeholder="ahmet@gmail.com"
 						name="rememberEmail"
 						v-validate="'required|email'"
+						v-model="user.user_email"
 					>
 					<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('rememberP.rememberEmail')">
 						<strong>Hata:</strong> {{ errors.first('rememberP.rememberEmail') }}
@@ -104,6 +107,7 @@
 </template>
 
 <script>
+import firebase from 'firebase';
 
 export default {
 
@@ -111,7 +115,11 @@ export default {
 
 	data(){
 		return {
-			forgotPassStatus: false
+			forgotPassStatus: false,
+			user: {
+				user_email: 'fatihsinanyaman@gmail.com',
+				user_password: '123456',
+			}
 		}
 	},
 
@@ -119,21 +127,40 @@ export default {
 
 		async login(){
 
-			const validation = await !this.$validator.validateAll('login');
+			const validation = await this.$validator.validateAll('login');
 
 			if(!validation){
 				return false;
 			}
+
+			firebase.auth().signInWithEmailAndPassword(this.user.user_email, this.user.user_password)
+			.then((user) => {
+				console.log('user => ', user);
+				this.$router.push({
+					name: 'Profile'
+				});
+			})
+			.catch((error) => {
+				console.log('error => ', error);
+			});
 
 		},
 
 		async sendPassRemember(){
 
-			const validation = await !this.$validator.validateAll('rememberP');
+			const validation = await this.$validator.validateAll('rememberP');
 
 			if(!validation){
 				return false;
 			}
+
+			firebase.auth().sendPasswordResetEmail(this.user.user_email)
+			.then(() => {
+				console.log('gonderid');
+			})
+			.catch((error) => {
+				console.log('hata => ', error);
+			});
 
 		},
 

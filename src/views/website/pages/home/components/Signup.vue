@@ -11,6 +11,7 @@
 				placeholder="Ahmet Yıldırım"
 				name="name"
 				v-validate="'required|min:2'"
+				v-model="user.user_fullname"
 			>
 			<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('name')">
 				<strong>Hata:</strong> {{ errors.first('name') }}
@@ -27,6 +28,7 @@
 				placeholder="ahmet@gmail.com"
 				name="email"
 				v-validate="'required|email'"
+				v-model="user.user_email"
 			>
 			<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('email')">
 				<strong>Hata:</strong> {{ errors.first('email') }}
@@ -43,6 +45,7 @@
 				placeholder="******"
 				name="password"
 				v-validate="'required|min:5'"
+				v-model="user.user_password"
 			>
 			<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('password')">
 				<strong>Hata:</strong> {{ errors.first('password') }}
@@ -71,19 +74,39 @@
 
 <script>
 
+import firebase from 'firebase';
+
 export default {
 
 	name: 'Signup',
+
+	data(){
+		return {
+			user: {
+				user_email: 'fatihsinanyaman@gmail.com',
+				user_password: '123456',
+				user_fullname: 'Sinan Yaman',
+			}
+		}
+	},
 
 	methods: {
 
 		async signup(){
 
-			const validation = await !this.$validator.validateAll();
+			const validation = await this.$validator.validateAll();
 
 			if(!validation){
 				return false;
 			}
+
+			console.log('geldi---');
+
+			firebase.auth().createUserWithEmailAndPassword(this.user.user_email, this.user.user_password).then((user) => {
+				console.log('user => ', user);
+			}).catch((error) => {
+				console.log('error! => ', error);
+			});
 
 		}
 
