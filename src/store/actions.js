@@ -34,14 +34,21 @@ export default {
 
 	},
 
-	signup({commit}, {user_email, user_password}){
+	signup({commit, dispatch}, {user_email, user_password}){
+
+		dispatch('wait/start', 'signup');
 
 		return new Promise((resolve, reject) => {
 
-			firebase.auth().createUserWithEmailAndPassword(user_email, user_password).then((user) => {
+			firebase.auth().createUserWithEmailAndPassword(user_email, user_password)
+			.then((user) => {
 				resolve(user);
-			}).catch((error) => {
+			})
+			.catch((error) => {
 				reject(error);
+			})
+			.finally(() => {
+				dispatch('wait/end', 'signup');
 			});
 
 		});
