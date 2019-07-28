@@ -1,5 +1,5 @@
 <template>
-	<form class="p-form" @submit.prevent="signup">
+	<form class="p-form" @submit.prevent="doSignup">
 
 		<div :class="['p-form__control', 'p-form-validation', { 'is-error': errors.has('name') }]">
 			<label for="name">Ad-Soyad</label>
@@ -75,6 +75,7 @@
 <script>
 
 import firebase from 'firebase';
+import { mapActions } from 'vuex';
 
 export default {
 
@@ -92,7 +93,9 @@ export default {
 
 	methods: {
 
-		async signup(){
+		...mapActions(['showSuccessMsg', 'showErrorMsg', 'signup']),
+
+		async doSignup(){
 
 			const validation = await this.$validator.validateAll();
 
@@ -100,17 +103,20 @@ export default {
 				return false;
 			}
 
-			console.log('geldi---');
-
-			firebase.auth().createUserWithEmailAndPassword(this.user.user_email, this.user.user_password).then((user) => {
-				console.log('user => ', user);
-			}).catch((error) => {
-				console.log('error! => ', error);
+			this.signup({
+				user_email: this.user.user_email,
+				user_password: this.user.user_password
+			})
+			.then((user) => {
+				this.showSuccessMsg('Başarıyla Kayıt Oldunuz...');
+			})
+			.catch((error) => {
+				this.showErrorMsg(error.message);
 			});
 
 		}
 
-	}
+	},
 
 }
 

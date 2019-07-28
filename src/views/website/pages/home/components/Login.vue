@@ -2,7 +2,7 @@
 	<div>
 		<transition name="fade">
 
-			<form class="p-form" @submit.prevent="login" v-if="!forgotPassStatus" data-vv-scope="login" key="login">
+			<form class="p-form" @submit.prevent="submitLogin" v-if="!forgotPassStatus" data-vv-scope="login" key="login">
 
 				<div :class="['p-form__control', 'p-form-validation', { 'is-error': errors.has('login.email') }]">
 					<label for="email">Email</label>
@@ -15,7 +15,7 @@
 						placeholder="ahmet@gmail.com"
 						name="email"
 						v-validate="'required|email'"
-						v-model="user.user_email"
+						v-model="user_email"
 					>
 					<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('login.email')">
 						<strong>Hata:</strong> {{ errors.first('login.email') }}
@@ -33,7 +33,7 @@
 						placeholder="******"
 						name="password"
 						v-validate="'required|min:5'"
-						v-model="user.user_password"
+						v-model="user_password"
 					>
 					<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('login.password')">
 						<strong>Hata:</strong> {{ errors.first('login.password') }}
@@ -90,7 +90,7 @@
 						placeholder="ahmet@gmail.com"
 						name="rememberEmail"
 						v-validate="'required|email'"
-						v-model="user.user_email"
+						v-model="user_email"
 					>
 					<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('rememberP.rememberEmail')">
 						<strong>Hata:</strong> {{ errors.first('rememberP.rememberEmail') }}
@@ -107,7 +107,9 @@
 </template>
 
 <script>
+
 import firebase from 'firebase';
+import {mapActions} from 'vuex';
 
 export default {
 
@@ -116,16 +118,16 @@ export default {
 	data(){
 		return {
 			forgotPassStatus: false,
-			user: {
-				user_email: 'fatihsinanyaman@gmail.com',
-				user_password: '123456',
-			}
+			user_email: 'fatihsinanyaman@gmail.com',
+			user_password: '123456',
 		}
 	},
 
 	methods: {
 
-		async login(){
+		...mapActions(['login', 'sendResetPasswordEmail']),
+
+		async submitLogin(){
 
 			const validation = await this.$validator.validateAll('login');
 
@@ -133,7 +135,7 @@ export default {
 				return false;
 			}
 
-			firebase.auth().signInWithEmailAndPassword(this.user.user_email, this.user.user_password)
+			this.login({user_email: this.user_email, user_password: this.user_password})
 			.then((user) => {
 				console.log('user => ', user);
 				this.$router.push({
@@ -154,7 +156,7 @@ export default {
 				return false;
 			}
 
-			firebase.auth().sendPasswordResetEmail(this.user.user_email)
+			this.sendResetPasswordEmail(this.user_email)
 			.then(() => {
 				console.log('gonderid');
 			})
@@ -170,7 +172,7 @@ export default {
 			})
 		}
 
-	}
+	},
 
 }
 

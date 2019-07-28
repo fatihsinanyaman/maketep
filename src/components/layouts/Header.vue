@@ -2,10 +2,10 @@
 	<header id="navigation" class="p-navigation">
 		<div class="p-navigation__banner">
 			<div class="p-navigation__logo">
-				<a class="p-navigation__link" href="#">
+				<router-link tag="a" class="p-navigation__link" :to="{ name: 'Home' }">
 					<!-- <img class="p-navigation__image" src="https://assets.ubuntu.com/v1/5d6da5c4-logo-canonical-aubergine.svg" alt="" width="95"> -->
 					<img :src="require('@/assets/imgs/maketep.png')" width="136" />
-				</a>
+				</router-link>
 			</div>
 			<a href="#navigation" class="p-navigation__toggle--open" title="menu">Menu</a>
 			<a href="#navigation-closed" class="p-navigation__toggle--close" title="close menu">Close menu</a>
