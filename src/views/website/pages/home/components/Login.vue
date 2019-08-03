@@ -46,9 +46,9 @@
 							<input 
 								id="remember" 
 								type="checkbox" 
-								name="remember"
+								v-model="rememberStatus"
 							>
-							<label for="accept">Beni Hatırla!</label>
+							<label for="remember">Beni Hatırla!</label>
 						</div>
 						<div class="col-4 col-small-12">
 							<div class="u-align--right">
@@ -118,8 +118,9 @@ export default {
 	data(){
 		return {
 			forgotPassStatus: false,
-			user_email: 'fatihsinanyaman@gmail.com',
-			user_password: '123456',
+			user_email: '',
+			user_password: '',
+			rememberStatus: false
 		}
 	},
 
@@ -137,10 +138,17 @@ export default {
 
 			this.login({user_email: this.user_email, user_password: this.user_password})
 			.then((user) => {
-				console.log('user => ', user);
+
+				if(this.rememberStatus){
+					this.setRememberToken();
+				}else{
+					this.removeRememberMeToken();
+				}
+
 				this.$router.push({
 					name: 'Profile'
 				});
+
 			})
 			.catch((error) => {
 				console.log('error => ', error);
@@ -158,10 +166,10 @@ export default {
 
 			this.sendResetPasswordEmail(this.user_email)
 			.then(() => {
-				console.log('gonderid');
+				this.showSuccessMsg('Parola hatırlatma e-maili gönderildi, gelen kutunuzu kontrol ediniz...');
 			})
 			.catch((error) => {
-				console.log('hata => ', error);
+				this.showErrorMsg(error.message);
 			});
 
 		},
@@ -170,9 +178,44 @@ export default {
 			this.$nextTick(() => {
 				this.forgotPassStatus = !this.forgotPassStatus;
 			})
+		},
+
+		setRememberToken(){
+
+			const payload = {
+				user_email: 	this.user_email,
+				user_password: 	this.user_password
+			}
+
+			localStorage.setItem(process.env.VUE_APP_REMEMBER_TOKEN_NAME, window.btoa(JSON.stringify(payload)));
+
+		},
+
+		removeRememberMeToken(){
+			localStorage.removeItem(process.env.VUE_APP_REMEMBER_TOKEN_NAME);
+		},
+
+		getRememberToken(){
+
+			let rememberToken = localStorage.getItem(process.env.VUE_APP_REMEMBER_TOKEN_NAME);
+			
+			if(rememberToken){
+				
+				const loginData = JSON.parse(window.atob(rememberToken));
+
+				this.user_email 		= loginData.user_email;
+				this.user_password 		= loginData.user_password;
+				this.rememberStatus 	= true;
+
+			}
+
 		}
 
 	},
+
+	created(){
+		this.getRememberToken();
+	}
 
 }
 

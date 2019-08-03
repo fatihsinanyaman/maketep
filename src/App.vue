@@ -1,8 +1,10 @@
 <template>
 		<div>
-			<router-view name="header" />
-			<router-view />
-			<router-view name="footer" />
+			<template v-if="appLoadStatus">
+				<router-view name="header" />
+				<router-view />
+				<router-view name="footer" />
+			</template>
 			<alert />
 			<loading />
 		</div>
@@ -17,9 +19,20 @@ export default {
 
 	name: 'app',
 
+	data(){
+		return {
+			appLoadStatus: false
+		}
+	},
+
 	components: {
 		Alert,
 		Loading
+	},
+
+	async created(){
+		await this.$store.dispatch('fetchAuth');
+		this.appLoadStatus = true;
 	}
 
 }

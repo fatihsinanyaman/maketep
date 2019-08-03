@@ -87,6 +87,7 @@ export default {
 				user_email: 'fatihsinanyaman@gmail.com',
 				user_password: '123456',
 				user_fullname: 'Sinan Yaman',
+				user_image: null
 			}
 		}
 	},
@@ -103,12 +104,15 @@ export default {
 				return false;
 			}
 
-			this.signup({
-				user_email: this.user.user_email,
-				user_password: this.user.user_password
-			})
+			this.signup(this.user)
 			.then((user) => {
+
+				this.$router.push({
+					name: 'Profile'
+				});
+
 				this.showSuccessMsg('Başarıyla Kayıt Oldunuz...');
+			
 			})
 			.catch((error) => {
 				this.showErrorMsg(error.message);

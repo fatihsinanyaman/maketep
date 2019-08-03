@@ -20,6 +20,10 @@ export default {
 			status: false,
 			msg: null
 		});	
+	},
+
+	SET_USER(state, user){
+		Vue.set(state, 'user', user);
 	}
 
 };

@@ -9,7 +9,6 @@
 						<li class="p-inline-list__item"> <a href="#">Maketep Nedir?</a> </li> 
 						<li class="p-inline-list__item"> <a href="#">Hata Gönder</a> </li> 
 					</ul> 
-					<span class="u-off-screen"> <a href="#">Go to the top of the page</a> </span> 
 				</nav> 
 			</div> 
 		</div> 
@@ -21,4 +20,5 @@
 export default {
 	name: 'Footer',
 }
+
 </script>

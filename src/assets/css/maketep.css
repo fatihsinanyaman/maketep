@@ -1,0 +1,8 @@
+.page-title{
+	padding-top: calc(1rem - 1px);
+}
+
+.croppa-container canvas{
+	margin: 0;
+	padding: 0;
+}
