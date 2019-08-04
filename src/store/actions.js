@@ -84,7 +84,7 @@ export default {
 
 	},
 
-	logout({dispatch}){
+	logout({dispatch, commit}){
 
 		dispatch('wait/start', 'logout');
 
@@ -92,7 +92,11 @@ export default {
 
 			firebase.auth().signOut()
 			.then(() => {
+				
+				commit('SET_LOGGED_STATUS', false);
+				
 				resolve();
+
 			})
 			.catch((error) => {
 				reject(error);
@@ -105,9 +109,9 @@ export default {
 
 	},
 
-	fetchAuth({dispatch, commit}){
+	authRefresh({dispatch, commit}){
 
-		dispatch('wait/start', 'fetchAuth');
+		dispatch('wait/start', 'authRefresh');
 
 		return new Promise(async (resolve, reject) => {
 
@@ -121,7 +125,7 @@ export default {
 
 			resolve();
 
-			dispatch('wait/end', 'fetchAuth');
+			dispatch('wait/end', 'authRefresh');
 
 		});
 
@@ -146,6 +150,7 @@ export default {
 			};
 
 			await commit('SET_USER', user);
+			await commit('SET_LOGGED_STATUS', true);
 
 		}
 
@@ -289,7 +294,7 @@ export default {
 		});
 		
 		setTimeout(() => {
-			dispatch('closeAlert', 'error');
+			dispatch('closeAlert', 'success');
 		}, 3000);
 	
 	},

@@ -12,6 +12,8 @@ import NotFound from '@/views/website/pages/404/Index';
 import UserWrapper from '@/views/user/UserWrapper';
 import Profile from '@/views/user/pages/profile/Index';
 
+import Test from '@/components/Test';
+
 const routes = [
 	{
 		path: `/`,
@@ -21,6 +23,11 @@ const routes = [
 			header: Header,
 			footer: Footer,
 		}
+	},
+	{
+		path: `/test`,
+		name: 'Test',
+		component: Test
 	},
 	{
 		path: `/account`,

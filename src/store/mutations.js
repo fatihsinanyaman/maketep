@@ -24,6 +24,10 @@ export default {
 
 	SET_USER(state, user){
 		Vue.set(state, 'user', user);
+	},
+
+	SET_LOGGED_STATUS(state, isLoggedIn){
+		Vue.set(state, 'isLoggedIn', isLoggedIn);
 	}
 
 };

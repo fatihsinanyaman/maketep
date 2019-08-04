@@ -18,6 +18,8 @@ export default {
 		photoURL: null,
 		bio: null,
 		id: null
-	}
+	},
+
+	isLoggedIn: false
 
 };

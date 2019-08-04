@@ -126,7 +126,12 @@ export default {
 
 	methods: {
 
-		...mapActions(['login', 'sendResetPasswordEmail']),
+		...mapActions([
+			'login', 
+			'sendResetPasswordEmail',
+			'showSuccessMsg', 
+			'showErrorMsg'
+		]),
 
 		async submitLogin(){
 
@@ -151,7 +156,7 @@ export default {
 
 			})
 			.catch((error) => {
-				console.log('error => ', error);
+				this.showErrorMsg(error.message);
 			});
 
 		},
