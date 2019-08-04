@@ -2,7 +2,9 @@
 		<div>
 			<template v-if="appLoadStatus">
 				<router-view name="header" />
-				<router-view />
+				<transition name="fade" mode="out-in">
+					<router-view />
+				</transition>
 				<router-view name="footer" />
 			</template>
 			<alert />

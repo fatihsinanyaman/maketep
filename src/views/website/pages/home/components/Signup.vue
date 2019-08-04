@@ -8,7 +8,7 @@
 				data-vv-as="Ad-Soyad"
 				type="text" 
 				id="name" 
-				placeholder="Ahmet Yıldırım"
+				placeholder="Adınız Soyadınız..."
 				name="name"
 				v-validate="'required|min:2'"
 				v-model="user.user_fullname"
@@ -25,7 +25,7 @@
 				data-vv-as="Email"
 				type="text" 
 				id="email" 
-				placeholder="ahmet@gmail.com"
+				placeholder="e-mail adresiniz"
 				name="email"
 				v-validate="'required|email'"
 				v-model="user.user_email"
@@ -44,7 +44,7 @@
 				type="password" 
 				placeholder="******"
 				name="password"
-				v-validate="'required|min:5'"
+				v-validate="'required|min:6'"
 				v-model="user.user_password"
 			>
 			<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('password')">
@@ -84,9 +84,9 @@ export default {
 	data(){
 		return {
 			user: {
-				user_email: 'fatihsinanyaman@gmail.com',
-				user_password: '123456',
-				user_fullname: 'Sinan Yaman',
+				user_email: '',
+				user_password: '',
+				user_fullname: '',
 				user_image: null
 			}
 		}

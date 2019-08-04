@@ -12,8 +12,12 @@ export default {
 		return new Promise((resolve, reject) => {
 
 			firebase.auth().signInWithEmailAndPassword(user_email, user_password)
-			.then((data) => {
+			.then(async (data) => {
+				
+				await dispatch('setUser');
+				
 				resolve(data.user);
+
 			})
 			.catch((error) => {
 				reject(error);
@@ -105,37 +109,45 @@ export default {
 
 		dispatch('wait/start', 'fetchAuth');
 
-		return new Promise((resolve, reject) => {
+		return new Promise(async (resolve, reject) => {
 
-			firebase.auth().onAuthStateChanged(async (authUser) => {
+			const authUser = firebase.auth().currentUser;
 
-				if (authUser) {
+			if (authUser) {
 
-					console.log(authUser);
+				await dispatch('setUser');
+			
+			}
 
-					const userSnapShot 	= await db.collection('users').doc(authUser.uid).get();
-					const userOtherInfo = userSnapShot.data();
+			resolve();
 
-					const user = {
-						id: authUser.uid,
-						email: authUser.email,
-						displayName: authUser.displayName,
-						photoURL: authUser.photoURL,
-						username: userOtherInfo.username,
-						bio: userOtherInfo.bio
-					};
-
-					await commit('SET_USER', user);
-
-					dispatch('wait/end', 'fetchAuth');
-
-					resolve();
-				
-				}
-
-			});
+			dispatch('wait/end', 'fetchAuth');
 
 		});
+
+	},
+
+	async setUser({commit}){
+
+		const authUser = firebase.auth().currentUser;
+
+		if (authUser) {
+
+			const userSnapShot 	= await db.collection('users').doc(authUser.uid).get();
+			const userOtherInfo = userSnapShot.data();
+
+			const user = {
+				id: authUser.uid,
+				email: authUser.email,
+				displayName: authUser.displayName,
+				photoURL: authUser.photoURL,
+				username: userOtherInfo.username,
+				bio: userOtherInfo.bio
+			};
+
+			await commit('SET_USER', user);
+
+		}
 
 	},
 
@@ -147,14 +159,11 @@ export default {
 
 			const user = firebase.auth().currentUser;
 
-			console.log('payload', payload);
-
 			user.updateProfile(payload)
 			.then(function() {
 				resolve();
 			})
 			.catch(function(error) {
-				console.log(error);
 				reject(error);
 			})
 			.finally(() => {
@@ -211,6 +220,29 @@ export default {
 
 	},
 
+	updateUserPassword({commit, dispatch}, newPassword){
+
+		dispatch('wait/start', 'updateUserPassword');
+
+		return new Promise((resolve, reject) => {
+
+			const user = firebase.auth().currentUser;
+
+			user.updatePassword(newPassword)
+			.then(function() {
+				resolve();
+			})
+			.catch(function(error) {
+				reject(error);
+			})
+			.finally(() => {
+				dispatch('wait/end', 'updateUserPassword');
+			});
+
+		});
+
+	},
+
 	/*
 	file => Blob
 	 */
@@ -224,12 +256,15 @@ export default {
 
 			firebase.storage().ref(filePath).put(file)
 			.then(async function(snapshot) {
+
+				const userImageRef 			= firebase.storage().ref().child(snapshot.ref.fullPath);
+				const userPhotoFullPath 	= await userImageRef.getDownloadURL();
 				
 				await dispatch('updateAuthProfile', {
-					photoURL: snapshot.ref.fullPath
+					photoURL: userPhotoFullPath
 				});
 				
-				resolve(snapshot.ref.fullPath);
+				resolve(userPhotoFullPath);
 
 			})
 			.catch((error) => {

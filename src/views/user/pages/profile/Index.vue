@@ -15,7 +15,7 @@
 						v-model="imageCroppa"
 						:width="300"
 						:height="300"
-						initial-image="https://pbs.twimg.com/profile_images/1154632712197685250/ehckAScZ_400x400.jpg"
+						:initial-image="initialImage"
 					/>
 				</div>
 
@@ -86,6 +86,60 @@
 							</div>
 						</div>
 					</div>
+
+					<div class="p-form__group row">
+						<div class="col-12">
+							<label> 
+								Parolayı Değiştir
+								<input type="checkbox" class="p-switch" v-model="passwordChangeStatus">
+								<div class="p-switch__slider"></div>
+							</label>
+						</div>
+					</div>
+
+					<transition name="fade">
+						<div class="p-form__group row" v-if="passwordChangeStatus">
+						
+							<div class="col-6">
+								<div :class="['p-form__control', 'p-form-validation', { 'is-error': errors.has('newPassword') }]">
+									<label for="newPassword">Yeni Parola</label>
+									<input 
+										class="p-form-validation__input"
+										data-vv-as="Parola"
+										id="newPassword" 
+										type="password" 
+										placeholder="******"
+										name="newPassword"
+										ref="newPassword"
+										v-validate="'required|min:6'"
+										v-model="newPassword"
+									>
+									<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('newPassword')">
+										<strong>Hata:</strong> {{ errors.first('newPassword') }}
+									</p>
+								</div>
+							</div>
+
+							<div class="col-6">
+								<div :class="['p-form__control', 'p-form-validation', { 'is-error': errors.has('newPasswordCheck') }]">
+									<label for="newPasswordCheck">Yeni Parola (tekrar)</label>
+									<input 
+										class="p-form-validation__input"
+										data-vv-as="Parola"
+										id="newPasswordCheck" 
+										type="password" 
+										placeholder="******"
+										name="newPasswordCheck"
+										v-validate="'required|min:6|confirmed:newPassword'"
+									>
+									<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('newPasswordCheck')">
+										<strong>Hata:</strong> {{ errors.first('newPasswordCheck') }}
+									</p>
+								</div>
+							</div>
+
+						</div>
+					</transition>
 					
 					<button class="p-button--positive">Kaydet</button>
 
@@ -111,9 +165,11 @@ export default {
 		return {
 			displayName: null,
 			email: null,
-			image: '',
+			initialImage: '',
 			bio: null,
-			imageCroppa: {}
+			imageCroppa: {},
+			passwordChangeStatus: false,
+			newPassword: '',
 		}
 	},
 
@@ -137,7 +193,8 @@ export default {
 			'updateUserAdditionalInfo',
 			'showErrorMsg',
 			'showSuccessMsg',
-			'uploadProfileImage'
+			'uploadProfileImage',
+			'updateUserPassword'
 		]),
 
 		async updateProfile(){
@@ -181,6 +238,12 @@ export default {
 
 			}
 
+			// change password
+			if(this.passwordChangeStatus){
+				const updateUserPassword = this.updateUserPassword(this.newPassword);
+				promiseList.push(updateUserPassword);
+			}
+
 			//Profile Image
 			const imageFile 			= await this.imageCroppa.promisedBlob('image/jpeg');
 			const uploadProfileImage 	= this.uploadProfileImage(imageFile);
@@ -190,6 +253,7 @@ export default {
 
 			Promise.all(promiseList)
 			.then((results) => {
+				this.passwordChangeStatus = false;
 				self.showSuccessMsg('Hesabınız güncellendi!');
 			})
 			.catch((error) => {
@@ -205,14 +269,7 @@ export default {
 		this.displayName 	= this.user.displayName;
 		this.email 			= this.user.email;
 		this.bio 			= this.user.bio;
-
-		console.log(this.user.photoURL);
-
-		var userImageRef 	= firebase.storage().ref().child(this.user.photoURL);
-		var userPhoto 		= await userImageRef.getDownloadURL();
-
-		console.log(userPhoto);
-
+		this.initialImage 	= this.user.photoURL;
 
 	}
 

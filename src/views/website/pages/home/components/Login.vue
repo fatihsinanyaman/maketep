@@ -32,7 +32,7 @@
 						type="password" 
 						placeholder="******"
 						name="password"
-						v-validate="'required|min:5'"
+						v-validate="'required'"
 						v-model="user_password"
 					>
 					<p class="p-form-validation__message" id="input-error-message-inline" role="alert" v-if="errors.has('login.password')">
