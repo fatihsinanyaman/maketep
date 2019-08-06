@@ -11,6 +11,7 @@ import NotFound from '@/views/website/pages/404/Index';
 /* User */
 import UserWrapper from '@/views/user/UserWrapper';
 import Profile from '@/views/user/pages/profile/Index';
+import NewProject from '@/views/user/pages/newProject/Index';
 
 import Test from '@/components/Test';
 
@@ -45,6 +46,11 @@ const routes = [
 				path: `profile`,
 				name: 'Profile',
 				component: Profile
+			},
+			{
+				path: `new-project`,
+				name: 'NewProject',
+				component: NewProject
 			},
 		]	
 	},
