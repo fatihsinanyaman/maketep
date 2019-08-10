@@ -5,6 +5,13 @@ import { slugify } from '@/helpers/slugify';
 
 export default {
 
+	async loadApp({dispatch}){
+
+		await dispatch('authRefresh');
+		await dispatch('fetchCategories');
+
+	},
+
 	login ({dispatch}, {user_email, user_password}){
 
 		dispatch('wait/start', 'login');
@@ -329,5 +336,67 @@ export default {
 		return username;
 
 	},
+
+	async fetchCategories({dispatch, commit}){
+
+		dispatch('wait/start', 'fetchCategories');
+
+		return new Promise(async (resolve, reject) => {
+
+			db.collection("categories")
+			.get()
+			.then(async (querySnapshot) =>  {
+				
+				const categories = querySnapshot.docs.map(doc => {
+					const { id } = doc
+					const data = doc.data()
+					return { id, ...data }
+				});
+
+				await commit('SET_CATEGORIES', categories);
+
+			})
+			.catch(function(error) {
+				reject(error);
+			})
+			.finally(() => {
+				dispatch('wait/end', 'fetchCategories');
+				resolve();
+			});
+
+		});
+
+	},
+
+	async fetchTags({dispatch, commit}){
+
+		dispatch('wait/start', 'fetchTags');
+
+		return new Promise(async (resolve, reject) => {
+
+			db.collection("tags")
+			.get()
+			.then(async (querySnapshot) =>  {
+				
+				const tags = querySnapshot.docs.map(doc => {
+					const { id } = doc
+					const data = doc.data()
+					return { id, ...data }
+				});
+
+				await commit('SET_TAGS', tags);
+
+			})
+			.catch(function(error) {
+				reject(error);
+			})
+			.finally(() => {
+				dispatch('wait/end', 'fetchTags');
+				resolve();
+			});
+
+		});
+
+	}
 
 };

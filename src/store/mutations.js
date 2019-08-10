@@ -28,6 +28,14 @@ export default {
 
 	SET_LOGGED_STATUS(state, isLoggedIn){
 		Vue.set(state, 'isLoggedIn', isLoggedIn);
+	},
+
+	SET_CATEGORIES(state, categories){
+		Vue.set(state, 'categories', categories);
+	},
+
+	SET_TAGS(state, tags){
+		Vue.set(state, 'tags', tags);
 	}
 
 };

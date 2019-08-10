@@ -20,6 +20,10 @@ export default {
 		id: null
 	},
 
-	isLoggedIn: false
+	isLoggedIn: false,
+
+	categories: [],
+	
+	tags: [],
 
 };

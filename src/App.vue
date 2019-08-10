@@ -33,7 +33,7 @@ export default {
 	},
 
 	async created(){
-		await this.$store.dispatch('authRefresh');
+		await this.$store.dispatch('loadApp');
 		this.appLoadStatus = true;
 	}
 
