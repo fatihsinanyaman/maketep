@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import * as Constants from '@/store/constants';
 
 export default {
 
@@ -36,6 +37,10 @@ export default {
 
 	SET_TAGS(state, tags){
 		Vue.set(state, 'tags', tags);
-	}
+	},
+
+	SET_PROJECT(state, project){
+		Vue.set(state, 'project', project);
+	},
 
 };

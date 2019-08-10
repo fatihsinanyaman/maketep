@@ -8,11 +8,7 @@
 			</div>
 
 			<div class="col-12">
-				
-				<form class="p-form" @submit.prevent="addProject">
-					<project-form />
-				</form>
-
+				<project-form @submit="submitProject" />
 			</div>
 
 		</div>
@@ -46,20 +42,25 @@ export default {
 		ProjectForm
 	},
 
-	// for child component validation
-	provide() {
-		return {
-			$validator: this.$validator,
-		}
-	},
-
 	methods: {
 
-		async addProject(){
+		...mapActions([
+			'addProject',
+			'addProjectImages'
+		]),
 
-			const valResponse = await this.$validator.validateAll();
+		async submitProject(project){
 
-			console.log(valResponse);
+			await this.addProjectImages(project.images);
+			return;
+			
+			this.addProject(project)
+			.then((id) => {
+				console.log('eklend', id);
+			})
+			.catch((error) => {
+				this.showErrorMsg(error.message);
+			});
 
 		}
 

@@ -397,6 +397,157 @@ export default {
 
 		});
 
+	},
+
+	async addProject({dispatch, commit}, project){
+
+		dispatch('wait/start', 'addProject');
+
+		return new Promise(async (resolve, reject) => {
+
+			console.log('project => ', project);
+
+			db.collection('projects').add(project)
+			.then((docRef) => {
+				console.log(docRef);
+				resolve(docRef.id);
+			})
+			.catch((error) => {
+				reject(error);
+			})
+			.finally(() => {
+				dispatch('wait/end', 'addProject');
+			});;			
+
+		});
+
+	},
+
+	async addTag({dispatch, commit}, tag){
+
+		dispatch('wait/start', 'addTag');
+
+		return new Promise(async (resolve, reject) => {
+
+			db.collection('tags').add(tag)
+			.then((docRef) => {
+				resolve(docRef.id);
+			})
+			.catch((error) => {
+				reject(error);
+			})
+			.finally(() => {
+				dispatch('wait/end', 'addTag');
+			});;			
+
+		});
+
+	},
+
+	// convert tags to tag id list
+	async getTagIds({dispatch, commit}, tags){
+
+		dispatch('wait/start', 'getTagIds');
+
+		let tagIdList 	= [];
+		let prList 		= [];
+		let singlePr;
+		
+		return new Promise(async (resolve, reject) => {
+
+
+			await Promise.all(prList);
+
+			tags.forEach(async (tag, keyTag) => {
+
+				singlePr = db.collection("tags")
+				.where('tag' , '==', tag)
+				.get()
+				.then(async (querySnapshot) => {
+
+					if(querySnapshot.size === 0){
+
+						await dispatch('addTag', {
+							tag: tag
+						})
+						.then((tagId) => {
+							tagIdList.push(tagId);
+						});
+
+					}else{
+						tagIdList.push(querySnapshot.docs[0].id);
+					}
+
+				});
+
+				prList.push(singlePr);
+
+
+			});
+
+			await Promise.all(prList);
+
+			dispatch('wait/end', 'getTagIds');
+			
+			resolve(tagIdList);
+
+		});
+
+	},
+
+	/*
+	image => base64
+	 */
+	uploadProjectImage({commit, dispatch, state}, image){
+
+		dispatch('wait/start', 'uploadProjectImage');
+
+		return new Promise((resolve, reject) => {
+
+			const imagePath = `project-images/${Math.random().toString(36).replace('0.', '').substring(0, 6)}.jpg`;
+
+			firebase.storage().ref().child(imagePath).putString(image, 'base64')
+			.then(async function(snapshot) {
+
+				const projectImageRef 		= firebase.storage().ref().child(snapshot.ref.fullPath);
+				const projectImageFullPath 	= await projectImageRef.getDownloadURL();
+				
+				resolve(projectImageFullPath);
+
+			})
+			.catch((error) => {
+				reject(error)
+			})
+			.finally(() => {
+				dispatch('wait/end', 'uploadProjectImage');
+			});
+
+		});
+
+	},
+
+	addProjectImages({dispatch}, images){
+
+		dispatch('wait/start', 'addProjectImages');
+
+		let prList = [];
+
+		return new Promise(async (resolve, reject) => {
+			
+			images.forEach((image) => {
+				prList.push(dispatch('uploadProjectImage', image));
+			});
+
+			await Promise.all(prList).then((res) => {
+				console.log('res', res);
+				resolve(res);
+			})
+			.finally(() => {
+				dispatch('wait/end', 'addProjectImages');
+			});
+		
+		});
+
 	}
 
 };

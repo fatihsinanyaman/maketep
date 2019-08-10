@@ -46,6 +46,12 @@ export default {
 		}
 	},
 
+	props: {
+		value: {
+			type: String
+		}
+	},
+
 	components: {
 		quillEditor
 	},
@@ -56,6 +62,10 @@ export default {
 			this.$emit('input', e.html);
 		}
 
+	},
+
+	created(){
+		this.content = this.value;
 	}
 
 }

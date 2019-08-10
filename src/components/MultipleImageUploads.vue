@@ -28,6 +28,8 @@
 
 <script>
 
+import { mapActions } from 'vuex';
+
 export default {
 
 	name: 'multipleImageUploads',
@@ -39,42 +41,111 @@ export default {
 		}
 	},
 
-	components: {
+	computed: {
+		base64List(){
+			return this.images.map(i => i.split(',')[1]);
+		}
 	},
 
 	watch: {
 		
-		images: function(images) {
-			this.$emit('input', images)
+		images: function() {
+			this.$emit('input', this.base64List);
 		}
 
 	},
 
 	methods: {
 
+		...mapActions(['showErrorMsg']),
+
 		inputChanges(files){
 
+			let pList = [];
+
 			Array.from(files).forEach((file, keyFile) => {
-				this.addFile(file);
+				pList.push(this.addFile(file));
 			});
+
+			this.$store.dispatch('wait/start', 'loadImages');
+
+			Promise.all(pList)
+			.then((newImages) => {
+				this.images = this.images.concat(newImages);
+			})
+			.catch(() => {
+				this.showErrorMsg('Görseller yüklenemedi!');
+			})
+			.finally(() => {
+				this.$store.dispatch('wait/end', 'loadImages');
+				this.$refs[this.inputRef].value = null;
+			});
+
 
 		},
 
 		addFile(file) {
 
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				this.images.push(e.target.result);
-			}
-			
-			reader.readAsDataURL(file);
+			return new Promise((resolve, reject) => {
 
-			this.$refs[this.inputRef].value = null;
+				const reader = new FileReader();
+				reader.onload = async (e) => {
+					const rszImg = await this.resizebase64(e.target.result, 1024, 1024);
+					resolve(rszImg);
+				}
+				
+				reader.readAsDataURL(file);		
+
+			});
 
 		},
 
 		removeImage(key){
 			this.images.splice(key, 1);
+		},
+
+		resizebase64(base64, maxWidth, maxHeight){
+
+			return new Promise((resolve, reject) => {
+
+				// Create and initialize two canvas
+				var canvas 			= document.createElement("canvas");
+				var ctx 			= canvas.getContext("2d");
+				var canvasCopy 		= document.createElement("canvas");
+				var copyContext 	= canvasCopy.getContext("2d");
+
+				// Create original image
+				var img = new Image();
+				img.src = base64;
+
+				img.onload = () => {
+
+					// Determine new ratio based on max size
+					var ratio = 1;
+					if(img.width > maxWidth)
+					ratio = maxWidth / img.width;
+					else if(img.height > maxHeight)
+					ratio = maxHeight / img.height;
+
+					// Draw original image in second canvas
+					canvasCopy.width 	= img.width;
+					canvasCopy.height 	= img.height;
+					copyContext.drawImage(img, 0, 0);
+
+					// Copy and resize second canvas to first canvas
+					canvas.width 	= img.width * ratio;
+					canvas.height 	= img.height * ratio;
+					
+					ctx.drawImage(canvasCopy, 0, 0, canvasCopy.width, canvasCopy.height, 0, 0, canvas.width, canvas.height);
+
+					resolve(canvas.toDataURL("image/jpeg"));
+
+				};
+
+				img.onerror = reject;
+
+			});
+
 		}
 
 	}

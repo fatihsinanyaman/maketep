@@ -12,6 +12,7 @@
     "core-js": "^2.6.5",
     "firebase": "^6.3.4",
     "lodash": "^4.17.15",
+    "resize-base64": "^1.0.12",
     "vee-validate": "^2.2.13",
     "vue": "^2.6.10",
     "vue-click-outside": "^1.0.7",

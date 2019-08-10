@@ -1,3 +1,5 @@
+import * as Constants from '@/store/constants';
+
 export default {
 
 	alert: {
@@ -25,5 +27,7 @@ export default {
 	categories: [],
 	
 	tags: [],
+
+	project: JSON.parse(JSON.stringify(Constants.PROJECT))
 
 };
