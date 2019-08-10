@@ -40,6 +40,13 @@
 						</p>
 					</div>
 
+					<div :class="['p-form__control', 'p-form-validation', { 'is-error': errors.has('images') }]">
+						<label for="description">Görseller</label>
+						<p class="p-form-help-text">En az 1 görsel eklemelisiniz.</p>
+						<multiple-image-uploads 
+						/>
+					</div>
+
 				</form>
 
 			</div>
@@ -56,6 +63,7 @@
 import { mapActions, mapState } from 'vuex';
 
 import TextEditor from '@/components/TextEditor';
+import MultipleImageUploads from '@/components/MultipleImageUploads';
 
 export default {
 
@@ -75,13 +83,22 @@ export default {
 	},
 
 	components: {
-		TextEditor
+		TextEditor,
+		MultipleImageUploads
 	},
 
 	methods: {
 
 		...mapActions([
 		]),
+
+		async doSignup(){
+
+			const valResponse = await this.$validator.validateAll();
+
+			console.log(valResponse);
+
+		}
 
 	},
 
