@@ -110,6 +110,7 @@
 					<label for="files">Dosyalar</label>
 					<multiple-files-upload 
 						id="files"
+						v-model="project.files"
 					/>
 				</div>
 			</div>

@@ -405,11 +405,8 @@ export default {
 
 		return new Promise(async (resolve, reject) => {
 
-			console.log('project => ', project);
-
 			db.collection('projects').add(project)
 			.then((docRef) => {
-				console.log(docRef);
 				resolve(docRef.id);
 			})
 			.catch((error) => {
@@ -526,6 +523,35 @@ export default {
 
 	},
 
+
+	uploadProjectFile({commit, dispatch, state}, file){
+
+		dispatch('wait/start', 'uploadProjectFile');
+
+		return new Promise((resolve, reject) => {
+
+			const filePath = `project-files/${Math.random().toString(36).replace('0.', '').substring(0, 6)}-${file.name}`;
+
+			firebase.storage().ref().child(filePath).put(file)
+			.then(async function(snapshot) {
+
+				const fileRef 				= firebase.storage().ref().child(snapshot.ref.fullPath);
+				const fileFullPath 			= await fileRef.getDownloadURL();
+				
+				resolve(fileFullPath);
+
+			})
+			.catch((error) => {
+				reject(error)
+			})
+			.finally(() => {
+				dispatch('wait/end', 'uploadProjectFile');
+			});
+
+		});
+
+	},
+
 	addProjectImages({dispatch}, images){
 
 		dispatch('wait/start', 'addProjectImages');
@@ -539,7 +565,6 @@ export default {
 			});
 
 			await Promise.all(prList).then((res) => {
-				console.log('res', res);
 				resolve(res);
 			})
 			.finally(() => {
@@ -548,6 +573,47 @@ export default {
 		
 		});
 
-	}
+	},
+
+	addProjectFiles({dispatch}, files){
+
+		dispatch('wait/start', 'addProjectFiles');
+
+		let prList = [];
+
+		return new Promise(async (resolve, reject) => {
+			
+			files.forEach((file) => {
+				prList.push(dispatch('uploadProjectFile', file));
+			});
+
+			await Promise.all(prList).then((res) => {
+				resolve(res);
+			})
+			.finally(() => {
+				dispatch('wait/end', 'addProjectFiles');
+			});
+		
+		});
+
+	},
+
+	async getNewProjectUrl({dispatch}, name){
+
+		dispatch('wait/start', 'getViableProjectName');
+
+		let projectName;
+		let snapShot;
+
+		do{
+			projectName 		= (projectName)? `${projectName}-${Math.random().toString(36).replace('0.', '').substring(0, 6)}`: slugify(name, false);
+			snapShot 			= await db.collection('projects').where("url", "==", projectName ).get();
+		}while(snapShot.size > 0)
+		
+		dispatch('wait/end', 'getViableProjectName');
+		
+		return projectName;
+
+	},
 
 };

@@ -16,7 +16,9 @@
 			</span>
 			<ul class="p-navigation__links" role="menu">
 				<li class="p-navigation__link" role="menuitem"><a href="#">Keşfet</a></li>
-				<li class="p-navigation__link" role="menuitem"><a href="#">+ Proje Ekle</a></li>
+				<li class="p-navigation__link" role="menuitem">
+					<router-link :to="{ name: 'NewProject'}">+ Proje Ekle</router-link>
+				</li>
 			</ul>
 			
 			<search />

@@ -46,16 +46,23 @@ export default {
 
 		...mapActions([
 			'addProject',
-			'addProjectImages'
+			'addProjectImages',
+			'addProjectFiles',
+			'showSuccessMsg', 
+			'showErrorMsg',
+			'getNewProjectUrl',
 		]),
 
 		async submitProject(project){
 
-			await this.addProjectImages(project.images);
-			return;
+			project.user 	= this.user.id;
+			project.url 	= await this.getNewProjectUrl(project.name);
+			project.images 	= await this.addProjectImages(project.images);
+			project.files 	= await this.addProjectFiles(project.files);
 			
 			this.addProject(project)
 			.then((id) => {
+				this.showSuccessMsg('Projeniz Eklendi...');
 				console.log('eklend', id);
 			})
 			.catch((error) => {
